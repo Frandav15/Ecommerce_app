@@ -9,7 +9,7 @@ namespace Ecommerce.Infrastructure
         public AppDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-            optionsBuilder.UseSqlServer("Server=.;Database=EcommerceDB;User Id=sad;Password=2612;TrustServerCertificate=True;MultipleActiveResultSets=true");
+            optionsBuilder.UseSqlServer("Server=localhost;Database=EcommerceDB;User Id=sa;Password=sql;TrustServerCertificate=True;MultipleActiveResultSets=true");
 
             return new AppDbContext(optionsBuilder.Options);
         }
