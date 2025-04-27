@@ -9,6 +9,7 @@ namespace EcommerceApp.Web.Controllers
     public class CategoryController : Controller
     {
         // Metodos de categorias necesario para poder tener nuestro catalogo y cumplir con las busquedas
+
         //Solo create para pruebas
 
         private readonly ICategoryService _categoryService;
