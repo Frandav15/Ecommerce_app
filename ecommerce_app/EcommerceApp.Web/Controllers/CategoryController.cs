@@ -50,7 +50,7 @@ namespace EcommerceApp.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Si el modelo no es válido, recargamos las categorías padre para el dropdown
+            // Si el modelo no es válido, recargamos las categorías padre para el dropdown.
             var categories = await _categoryService.GetAllAsync();
             ViewBag.ParentCategories = new SelectList(categories, "CategoryId", "Name");
 
