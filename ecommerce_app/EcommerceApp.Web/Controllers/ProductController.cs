@@ -23,6 +23,12 @@ namespace EcommerceApp.Web.Controllers
             return View(products);
         }
 
+        public async Task<IActionResult> PruebaTienda()
+        {
+            var products = await _productService.GetAllAsync();
+            return View(products);
+        }
+
         // GET: Product/Details/5
         public async Task<IActionResult> Details(int id)
         {

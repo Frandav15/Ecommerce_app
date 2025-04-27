@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Ecommerce.Domain.Entities.Product>
+
+@{
+    ViewData["Title"] = "Tienda de Productos";
+}
+
+<h1 class="text-center my-4">Tienda de Productos</h1>
+
+<div class="container">
+    <form asp-action="PruebaTienda"  class="mb-4">
+        <div class="input-group">
+            <input type="text" name="searchTerm" class="form-control" placeholder="Buscar productos..."/>
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </div>
+    </form>
+
+    <div class="row">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var product in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 400px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Name</h5>
+                            <p class="card-text">Cantidad: @product.StockQuantity</p>
+                            <p class="card-text">Categoria: @product.Category.Name</p>
+                            <p class="card-text">Precio: @product.Price.ToString("C")</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <p class="text-center">No hay productos disponibles.</p>
+            </div>
+        }
+    </div>
+</div>
