@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ecommerce.Application.Interfaces;
 using Ecommerce.Domain.Entities;
+using Ecommerce.Domain.Entities.Utils;
 using Ecommerce.Infrastructure.Interfaces;
 
 namespace Ecommerce.Application.Services
@@ -59,6 +60,11 @@ namespace Ecommerce.Application.Services
         public async Task<bool> DeleteAsync(int id)
         {
             return await _productRepository.DeleteAsync(id);
+        }
+
+        public async Task<Page<Product>> ObtenerFiltradosAsync(string terminoBusqueda, List<int> categoriasSeleccionadas, int? rangoPrecio, int pagina, int tamanoPagina)
+        {
+            return await _productRepository.ObtenerFiltradosAsync(terminoBusqueda, categoriasSeleccionadas, rangoPrecio, pagina, tamanoPagina);
         }
     }
 }

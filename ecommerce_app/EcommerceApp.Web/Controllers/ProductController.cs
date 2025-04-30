@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Application.Interfaces;
 using Ecommerce.Domain.Entities;
+using EcommerceApp.Web.Views;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -23,11 +24,36 @@ namespace EcommerceApp.Web.Controllers
             return View(products);
         }
 
-        public async Task<IActionResult> PruebaTienda()
+        public async Task<IActionResult> PruebaTienda(string terminoBusqueda, List<int> categoriasSeleccionadas, string rangoPrecioStr, int pagina = 1)
         {
-            var products = await _productService.GetAllAsync();
-            return View(products);
+            int? rangoPrecio = null;
+            if (int.TryParse(rangoPrecioStr, out int valorParseado))
+                rangoPrecio = valorParseado;
+
+            int tamanoPagina = 3;
+
+            var resultado = await _productService.ObtenerFiltradosAsync(
+                terminoBusqueda,
+                categoriasSeleccionadas,
+                rangoPrecio,
+                pagina,
+                tamanoPagina
+            );
+
+            var viewModel = new ProductoFiltradoViewModels
+            {
+                Productos = resultado.Items,
+                Categorias = await _categoryService.GetAllAsync(),
+                PaginaActual = resultado.CurrentPage,
+                TotalPaginas = resultado.TotalPages,
+                TerminoBusqueda = terminoBusqueda,
+                CategoriasSeleccionadas = categoriasSeleccionadas ?? new List<int>(),
+                RangoPrecio = rangoPrecio
+            };
+
+            return View(viewModel);
         }
+
 
         // GET: Product/Details/5
         public async Task<IActionResult> Details(int id)

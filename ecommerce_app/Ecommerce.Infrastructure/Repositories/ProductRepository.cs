@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ecommerce.Domain.Entities;
+using Ecommerce.Domain.Entities.Utils;
 using Ecommerce.Infrastructure.Data;
 using Ecommerce.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -69,5 +70,45 @@ namespace Ecommerce.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<Page<Product>> ObtenerFiltradosAsync(string terminoBusqueda, List<int> categoriasSeleccionadas, int? rangoPrecio, int pagina, int tamanoPagina)
+        {
+            var consulta = _context.Products
+                .Include(p => p.Category)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(terminoBusqueda))
+                consulta = consulta.Where(p => p.Name.Contains(terminoBusqueda));
+
+            if (categoriasSeleccionadas?.Any() == true)
+                consulta = consulta.Where(p => categoriasSeleccionadas.Contains(p.CategoryId));
+
+            if (rangoPrecio.HasValue)
+            {
+                consulta = rangoPrecio switch
+                {
+                    1 => consulta.Where(p => p.Price < 100),
+                    2 => consulta.Where(p => p.Price >= 100 && p.Price <= 500),
+                    3 => consulta.Where(p => p.Price > 500),
+                    _ => consulta
+                };
+            }
+
+            var totalElementos = await consulta.CountAsync();
+            var elementos = await consulta
+                .Skip((pagina - 1) * tamanoPagina)
+                .Take(tamanoPagina)
+                .ToListAsync();
+
+            return new Page<Product>
+            {
+                Items = elementos,
+                CurrentPage = pagina,
+                PageSize = tamanoPagina,
+                TotalCount = totalElementos,
+                TotalPages = (int)Math.Ceiling(totalElementos / (double)tamanoPagina)
+            };
+        }
+
     }
 }
